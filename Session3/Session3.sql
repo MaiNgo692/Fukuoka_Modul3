@@ -2,9 +2,10 @@ CREATE TABLE Categories (
     CategoryID INT AUTO_INCREMENT PRIMARY KEY,
     CategoryName VARCHAR(100) NOT NULL,
     Description TEXT,
-    ParentCategoryID INT,
-    FOREIGN KEY (ParentCategoryID) REFERENCES Categories(CategoryID)
+    Status  bit
 );
+select * from categories;
+drop table categories;
 CREATE TABLE Products (
     ProductID INT AUTO_INCREMENT PRIMARY KEY,
     ProductName VARCHAR(250) NOT NULL,
@@ -14,6 +15,7 @@ CREATE TABLE Products (
     ImageURL VARCHAR(1000),
     FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
 );
+drop table Products;
 CREATE TABLE Customers (
     CustomerID INT AUTO_INCREMENT PRIMARY KEY,
     FullName VARCHAR(100) NOT NULL,
@@ -38,6 +40,7 @@ CREATE TABLE OrderDetails (
     FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
     FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
 );
+drop table OrderDetails;
 CREATE TABLE Reviews (
     ReviewID INT AUTO_INCREMENT PRIMARY KEY,
     ProductID INT,
@@ -48,16 +51,17 @@ CREATE TABLE Reviews (
     FOREIGN KEY (ProductID) REFERENCES Products(ProductID),
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
 );
+drop table Reviews;
 
 
-INSERT INTO Categories (CategoryName, Description, ParentCategoryID)
+INSERT INTO Categories (CategoryName, Description, Status)
 VALUES 
-('Men', 'Men''s Clothing', NULL),
-('Women', 'Women''s Clothing', NULL),
+('Men', 'Men''s Clothing', 1),
+('Women', 'Women''s Clothing', 1),
 ('Shirts', 'Men''s Shirts', 1),
 ('Pants', 'Men''s Pants', 1),
-('Dresses', 'Women''s Dresses', 2),
-('Skirts', 'Women''s Skirts', 2);
+('Dresses', 'Women''s Dresses', 0),
+('Skirts', 'Women''s Skirts', 0);
 
 INSERT INTO Products (ProductName, CategoryID, Price, Description, ImageURL)
 VALUES 
