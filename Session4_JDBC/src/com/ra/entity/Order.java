@@ -1,18 +1,20 @@
 package com.ra.entity;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class Order {
+public class Order implements IEntity {
     private int id;
     private int customerId;
-    private String OrderDate;
+    private Date OrderDate;
     private double totalAmount;
     private String status;
 
     public Order() {
     }
 
-    public Order(int id, int customerId, String orderDate, double totalAmount, String status) {
+    public Order(int id, int customerId, Date orderDate, double totalAmount, String status) {
         this.id = id;
         this.customerId = customerId;
         OrderDate = orderDate;
@@ -20,7 +22,7 @@ public class Order {
         this.status = status;
     }
 
-    public Order(int customerId, String orderDate, double totalAmount, String status) {
+    public Order(int customerId, Date orderDate, double totalAmount, String status) {
         this.customerId = customerId;
         OrderDate = orderDate;
         this.totalAmount = totalAmount;
@@ -43,11 +45,12 @@ public class Order {
         this.customerId = customerId;
     }
 
-    public String getOrderDate() {
+    public Date getOrderDate() {
         return OrderDate;
     }
 
-    public void setOrderDate(String orderDate) {
+
+    public void setOrderDate(Date orderDate) {
         OrderDate = orderDate;
     }
 
@@ -65,5 +68,10 @@ public class Order {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public void init(ResultSet rs) throws SQLException {
+
     }
 }

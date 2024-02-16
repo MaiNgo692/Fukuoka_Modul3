@@ -1,6 +1,9 @@
 package com.ra.entity;
 
-public class OrderDetail {
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class OrderDetail implements IEntity {
     private int id;
     private int orderId;
     private  int productId;
@@ -63,5 +66,10 @@ public class OrderDetail {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    @Override
+    public void init(ResultSet rs) throws SQLException {
+
     }
 }

@@ -28,7 +28,7 @@ public class OrderServiceImpl implements OrderService {
             // truyen tham so
             cs.registerOutParameter(1,Types.INTEGER);
             cs.setInt(2,order.getCustomerId());
-            cs.setString(3,order.getOrderDate());
+            cs.setDate(3,order.getOrderDate());
             cs.setDouble(4,order.getTotalAmount());
             cs.setString(5,order.getStatus());
             int result = cs.executeUpdate();

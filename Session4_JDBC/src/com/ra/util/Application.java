@@ -8,6 +8,7 @@ import com.ra.service.impl.OrderDetailServiceImpl;
 import com.ra.service.impl.OrderServiceImpl;
 
 import java.sql.Connection;
+import java.util.Date;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class Application {
         try {
             connection = MySQLConnect.open();
             connection.setAutoCommit(false);
-            Order order = odService.insert( new Order(1,"2024-01-26 10:00:00",90.9,"Delivered"),connection);
+            Order order = odService.insert( new Order(1, (java.sql.Date) new Date(),90.9,"Delivered"),connection);
             OrderDetail OrderDetail = new OrderDetail(order.getId(), 1, 2, 29.99);
             odDetailService.insert(OrderDetail,connection);
         } catch (Exception ex) {

@@ -1,6 +1,9 @@
 package com.ra.entity;
 
-public class Category {
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class Category implements IEntity{
     private int id;
     private  String name;
     private String keyword;
@@ -63,5 +66,13 @@ public class Category {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @Override
+    public void init(ResultSet rs) throws SQLException {
+        setId(rs.getInt("CategoryID"));
+        setName(rs.getString("CategoryName"));
+        setDescription(rs.getString("Description"));
+        setStatus(rs.getInt("Status"));
     }
 }
