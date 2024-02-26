@@ -108,7 +108,6 @@ public  class Repository <T,K> implements IRepository<T,K> {
         ResultSet rs = null;
         try {
             conn = MySqlConnect.open();
-
             Field[] fields = entity.getClass().getDeclaredFields();
             String tblName = entity.getClass().getAnnotation(Table.class).name();
             List<Field> updateFields = Arrays.stream(fields)

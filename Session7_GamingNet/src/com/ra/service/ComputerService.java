@@ -85,11 +85,13 @@ public class ComputerService extends Repository<Computer,String> {
     }
     public void changeComputer(Scanner scanner) {
         System.out.println("Chọn máy cần đổi:");
-        Computer oldComputer = selectComputerOn(scanner);
+        Computer oldComputer = selectComputerOff(scanner);
         System.out.println("Chọn máy sẽ đổi sang:");
-        Computer newComputer = selectComputerOff(scanner);
+        Computer newComputer = selectComputerOn(scanner);
         oldComputer.setStatus(false);
         newComputer.setStatus(true);
+        edit(oldComputer);
+        edit(newComputer);
         Order order = orderService.findByComputerId(oldComputer.getId());
         order.setComputerId(newComputer.getId());
         orderService.edit(order);

@@ -35,11 +35,13 @@ public class OrderService extends Repository<Order,String> {
             pst.setObject(1,computerId);
             rs = pst.executeQuery();
             while (rs.next()) {
-                Order entity = Order.class.getDeclaredConstructor().newInstance();
-                for (Field f : fields) {
-                    f.setAccessible(true);
-                    f.set(entity, rs.getObject(f.getAnnotation(Column.class).name()));
-                }
+                Order entity = new Order();
+                entity.setStartTime(rs.getDate("startTime"));
+                entity.setId(rs.getString("id"));
+                entity.setCreated(rs.getDate("created"));
+                entity.setComputerId(rs.getString("computerId"));
+                entity.setPricePerHours(rs.getFloat("pricePerHours"));
+                entity.setStatus(rs.getBoolean("status"));
                 return entity ;
             }
         }catch (Exception ex){
@@ -53,8 +55,8 @@ public class OrderService extends Repository<Order,String> {
         Order newOrder = new Order();
         newOrder.setId(UUID.randomUUID().toString());
         newOrder.setComputerId(computer.getId());
-        newOrder.setStartTime(new Date());
-        newOrder.setCreated(new Date());
+//        newOrder.setStartTime(new Date());
+//        newOrder.setCreated(new Date());
         newOrder.setPricePerHours(computer.getPrice());
         newOrder.setStatus(false);
         add(newOrder);
