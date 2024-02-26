@@ -5,7 +5,7 @@ import com.ra.util.Id;
 import com.ra.util.Table;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.sql.Date;
 
 @Table(name = "orders")
 public class Order {
