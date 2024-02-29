@@ -8,7 +8,7 @@ import com.ra.util.Table;
 import java.util.Date;
 
 @Table(name = "employees")
-public class Employee {
+public class Employee implements Entity{
     @Id
     @Column(name = "Emp_Id")
     String empId;

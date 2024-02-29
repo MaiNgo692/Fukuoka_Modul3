@@ -127,7 +127,6 @@ public class Repository<T,K> implements IRepository<T,K> {
             int result =pst.executeUpdate();
             if(result>0){
                 conn.commit();
-                System.out.println(FontColor.success("Sửa thành công!"));
                 return entity;
             }
         }catch (Exception ex){

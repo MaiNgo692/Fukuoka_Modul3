@@ -21,8 +21,8 @@ public class ProductRepository extends Repository<Product,String>{
         ResultSet rs;
         try{
             conn = MysqlConnect.open();
-            pst = conn.prepareStatement("SELECT * FROM products WHERE Product_Name LIKE '%?%'");
-            pst.setObject(1,name);
+            pst = conn.prepareStatement("SELECT * FROM products WHERE Product_Name LIKE ?");
+            pst.setObject(1,"%"+name+"%");
             rs = pst.executeQuery();
             Field[] fields = Product.class.getDeclaredFields();
             while (rs.next()){

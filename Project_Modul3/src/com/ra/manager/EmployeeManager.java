@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class EmployeeManager implements Manager {
+public class EmployeeManager extends Manager<Employee> {
     EmployeeServiceImpl employeeService = new EmployeeServiceImpl();
     @Override
     public void run() {
@@ -57,12 +57,19 @@ public class EmployeeManager implements Manager {
             }
         }while (isExit);
     }
+
     private void showAllEmployee(){
         System.out.println("Danh sách sản phẩm:");
-        printTitle();
         List<Employee> employeeList = employeeService.findAll();
-        employeeList.forEach(Employee::displayData);
+        showPageCurrent(employeeList);
+    }
+    @Override
+    public void showPageCurrent(List<Employee> listData) {
+        List<Employee> showData=showDataPage(listData);
+        printTitle();
+        showData.forEach(Employee::displayData);
         printFooter();
+        showPage(listData);
     }
     private void addNewEmployee(){
         System.out.println("Nhập thông tin nhân viên:");
@@ -107,9 +114,7 @@ public class EmployeeManager implements Manager {
         String key = Console.sc.nextLine();
         List<Employee>  result = employeeService.findByIdOrName(key);
         if(!result.isEmpty()){
-            printTitle();
-            result.forEach(Employee::displayData);
-            printFooter();
+            showPageCurrent(result);
         }else {
             System.out.println(FontColor.warning("Không tìm thấy nhân viên nào!"));
         }
@@ -155,6 +160,6 @@ public class EmployeeManager implements Manager {
                 FontColor.centerString(30,"Địa chỉ"),FontColor.centerString(17,"Trạng thái"));
     }
     private void printFooter(){
-        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------------------");
     }
 }

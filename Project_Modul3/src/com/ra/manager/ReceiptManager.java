@@ -1,22 +1,9 @@
 package com.ra.manager;
-
-import com.ra.entity.Bill;
-import com.ra.entity.BillDetail;
-import com.ra.entity.Product;
 import com.ra.model.BillType;
-import com.ra.model.ConstStatus;
-import com.ra.service.IBillDetailService;
-import com.ra.service.IProductService;
-import com.ra.service.impl.BillDetailServiceImpl;
 import com.ra.service.impl.BillServiceImpl;
-import com.ra.service.impl.ProductServiceImpl;
 import com.ra.util.Console;
 import com.ra.util.FontColor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ReceiptManager extends BillManager{
     BillServiceImpl billService = new BillServiceImpl();

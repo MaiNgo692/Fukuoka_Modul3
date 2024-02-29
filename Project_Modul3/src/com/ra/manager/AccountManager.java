@@ -2,15 +2,17 @@ package com.ra.manager;
 
 import com.ra.entity.Account;
 import com.ra.entity.Employee;
+import com.ra.entity.Product;
 import com.ra.model.ConstStatus;
 import com.ra.repository.IRepository;
 import com.ra.repository.impl.Repository;
 import com.ra.service.impl.AccountServiceImpl;
 import com.ra.util.Console;
 import com.ra.util.FontColor;
-import java.util.List;
 
-public class AccountManager implements Manager{
+import java.util.ArrayList;
+import java.util.List;
+public class AccountManager extends Manager<Account> {
     AccountServiceImpl accountService = new AccountServiceImpl();
     @Override
     public void run() {
@@ -53,10 +55,16 @@ public class AccountManager implements Manager{
     }
     private void showAllAccount(){
         System.out.println("Danh sách tài khoản:");
-        printTitle();
         List<Account> accounts = accountService.findAll();
-        accounts.forEach(Account::displayData);
+        showPageCurrent(accounts);
+    }
+    @Override
+    public void showPageCurrent(List<Account> listData) {
+        List<Account> showData=showDataPage(listData);
+        printTitle();
+        showData.forEach(Account::displayData);
         printFooter();
+        showPage(listData);
     }
     private void addNewAccount(){
         System.out.println("Nhập thông tin account:");
@@ -159,6 +167,6 @@ public class AccountManager implements Manager{
                 FontColor.centerString(17,"Trạng thái"));
     }
     private void printFooter(){
-        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------");
     }
 }

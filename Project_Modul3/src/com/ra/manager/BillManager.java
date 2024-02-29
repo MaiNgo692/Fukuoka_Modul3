@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class BillManager implements Manager{
+public class BillManager extends Manager<Bill> {
     BillServiceImpl billService = new BillServiceImpl();
     AccountManager accountManager =new AccountManager();
     BillDetailServiceImpl billDetailService = new BillDetailServiceImpl();
@@ -72,6 +72,7 @@ public class BillManager implements Manager{
             }
         }while (isExit);
     }
+
     public void showAllBill(boolean billType){
         List<Bill> bills;
         if(billType == BillType.EXPORT){
@@ -93,7 +94,7 @@ public class BillManager implements Manager{
         List<BillDetail> billDetails = new ArrayList<>();
         boolean isExit = false;
         while (!isExit){
-            Product product = inputProductId();
+            Product product = inputProductId(billType);
                 try{
                     int quantity;
                     if(billType == BillType.EXPORT){
@@ -138,15 +139,21 @@ public class BillManager implements Manager{
             });
         }
     }
-    private Product inputProductId(){
+    private Product inputProductId(boolean billType){
         do{
             System.out.print(FontColor.info("Nhập mã sản phẩm:"));
             String productId = Console.sc.nextLine();
             Product product = productRepository.findId(productId);
-            if(product!= null&& product.isProductStatus()&& product.getQuantity()>0){
-                return product;
+            if(product!= null&& product.isProductStatus()){
+                if(billType == BillType.IMPORT){
+                    return product;
+                }else if(product.getQuantity()>0){
+                    return product;
+                }else {
+                    System.out.println(FontColor.warning("Hết hàng!"));
+                }
             }else {
-                System.out.println(FontColor.warning("Mã sản phẩm không tồn tại hoặc không hoạt động hoặc hết hàng!"));
+                System.out.println(FontColor.warning("Mã sản phẩm không tồn tại hoặc không hoạt động!"));
             }
         }while (true);
     }
@@ -225,7 +232,7 @@ public class BillManager implements Manager{
         }else {
             bills = billService.findAllBill();
         }
-        if(Storage.current_user.isPermission()== PermissionType.USER){
+        if(Storage.current_user.isPermission()== PermissionType.ADMIN){
             bills = bills.stream().filter(b->b.getEmpIdAuth().equals(Storage.current_user.getEmpId())).collect(Collectors.toList());
         }
         return bills;
@@ -292,7 +299,7 @@ public class BillManager implements Manager{
                     billDetail.displayData();
                     printBillDetailFooter();
                     System.out.println("Nhập trường cần edit:");
-                    Product product = inputProductId();
+                    Product product = inputProductId(billType);
                     billDetail.setProductId(product.getProductId());
                     if(billType == BillType.EXPORT){
                         billDetail.setQuantity(inputProductQuantity(product));
@@ -326,20 +333,23 @@ public class BillManager implements Manager{
         billCreatedList.forEach(Bill::displayData);
         printFooter();
         Bill approveBill = findByIdOrBillCode(billType);
-        if(approveBill!=null&& billCreatedList.contains(approveBill)){
+        if(approveBill!=null){
             List<BillDetail> billDetails = billDetailService.findByBillId(approveBill.getBillId());
             if(billType==BillType.EXPORT){
                 billDetails.forEach(bd->{
                     Product product = productRepository.findId(bd.getProductId());
                     product.setQuantity(product.getQuantity()-bd.getQuantity());
+                    productRepository.edit(product);
                 });
             }else {
                 billDetails.forEach(bd->{
                     Product product = productRepository.findId(bd.getProductId());
                     product.setQuantity(product.getQuantity()+bd.getQuantity());
+                    productRepository.edit(product);
                 });
             }
             approveBill.setBillStatus((int) ConstStatus.BillStt.APPROVE);
+            billService.edit(approveBill);
         }else {
             System.out.println(FontColor.warning("Không tìm thấy Bill"));
         }

@@ -1,5 +1,6 @@
 package com.ra.manager;
 
+import com.ra.entity.Account;
 import com.ra.entity.Product;
 import com.ra.model.ConstStatus;
 import com.ra.service.impl.ProductServiceImpl;
@@ -8,7 +9,7 @@ import com.ra.util.FontColor;
 import java.util.Date;
 import java.util.List;
 
-public class ProductManager implements Manager{
+public class ProductManager extends Manager<Product> {
     ProductServiceImpl productService = new ProductServiceImpl();
     @Override
     public void run() {
@@ -53,12 +54,47 @@ public class ProductManager implements Manager{
             }
         }while (isExit);
     }
+
+//    @Override
+//    public void showPage() {
+//        List<Product> productList = productService.findAll();
+//        if(productList.size()>10){
+//            int pages = productList.size()/10;
+//            System.out.print("<");
+//            for(int i = 1; i<= pages;i++){
+//                System.out.print(" "+ i  +" ");
+//            }
+//            System.out.print(">\n");
+//            selectPage(productList,pages);
+//        }
+//    }
+//    void selectPage(List<Product> products,int pages){
+//        System.out.println("Nhập trang muốn hiển thị: ");
+//        int selectPage = Integer.parseInt(Console.sc.nextLine());
+//        if(selectPage<= 0 ||selectPage > pages){
+//            System.out.println(FontColor.warning("Hãy nhập từ 1 đến "+pages));
+//        }else {
+//            showPageCurrent(products,selectPage);
+//        }
+//    }
+//    void showPageCurrent(List<Product> products, int currentPage){
+//        printTitle();
+//        List<Product> currentPageProduct = products.subList((currentPage-1)*10,(currentPage-1)*10+10);
+//        currentPageProduct.forEach(Product::displayData);
+//        showPage();
+//    }
     private void showAllProduct(){
         System.out.println("Danh sách sản phẩm:");
-        printTitle();
         List<Product> productList = productService.findAll();
-        productList.forEach(Product::displayData);
+        showPageCurrent(productList);
+    }
+    @Override
+    public void showPageCurrent(List<Product> listData) {
+        List<Product> showData=showDataPage(listData);
+        printTitle();
+        showData.forEach(Product::displayData);
         printFooter();
+        showPage(listData);
     }
     private void addNewProduct(){
         System.out.println("Nhập thông tin sản phẩm:");
@@ -100,19 +136,19 @@ public class ProductManager implements Manager{
                 switch (select){
                     case 1:
                         System.out.println("Tên sản phẩm hiện tại: " + product.getProductName());
-                        System.out.println(FontColor.info("Nhập tên mới cho sản phẩm:"));
+                        System.out.print(FontColor.info("Nhập tên mới cho sản phẩm:"));
                         String newName = Console.sc.nextLine();
                         product.setProductName(newName);
                         break;
                     case 2:
                         System.out.println("Tên nhà sản suất hiện tại : " + product.getManufacturer());
-                        System.out.println(FontColor.info("Nhập tên nhà sản xuất mới:"));
+                        System.out.print(FontColor.info("Nhập tên nhà sản xuất mới:"));
                         String newManufacture = Console.sc.nextLine();
                         product.setManufacturer(newManufacture);
                         break;
                     case 3:
                         System.out.println("Số lô hiện tại : " + product.getBatch());
-                        System.out.println(FontColor.info("Nhập số lô mới:"));
+                        System.out.print(FontColor.info("Nhập số lô mới:"));
                         int batch = Integer.parseInt(Console.sc.nextLine());
                         product.setBatch(batch);
                         break;
@@ -149,13 +185,11 @@ public class ProductManager implements Manager{
         return product;
     }
     private void findByName(){
-        System.out.println(FontColor.info("Nhập tên sản phẩm:"));
+        System.out.print(FontColor.info("Nhập tên sản phẩm:"));
         String name = Console.sc.nextLine();
         List<Product> result = productService.findByName(name);
         if(!result.isEmpty()){
-            printTitle();
-            result.forEach(Product::displayData);
-            printFooter();
+            showPageCurrent(result);
         }else {
             System.out.println(FontColor.warning("Không tìm thấy sản phẩm nào!"));
         }
@@ -199,6 +233,6 @@ public class ProductManager implements Manager{
                 FontColor.centerString(10,"Số lượng"),FontColor.centerString(17,"Trạng thái"));
     }
     private void printFooter(){
-        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------");
     }
 }

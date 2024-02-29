@@ -3,7 +3,7 @@ package com.ra.entity;
 import com.ra.util.*;
 
 @Table(name = "accounts")
-public class Account {
+public class Account implements Entity {
     @Id
     @Increment
     @Column(name = "Acc_Id")

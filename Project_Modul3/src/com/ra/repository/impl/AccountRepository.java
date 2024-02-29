@@ -49,7 +49,6 @@ public class AccountRepository extends Repository<Account,Integer> {
                 pst.setObject(1,empId);
                 rs = pst.executeQuery();
                 while (rs.next()){
-                    System.out.println(FontColor.success("Tìm thành công!"));
                     return setField(Account.class,rs,fields);
                 }
             }catch (Exception ex){

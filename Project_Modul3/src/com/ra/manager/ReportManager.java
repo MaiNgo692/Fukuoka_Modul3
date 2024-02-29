@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Map;
 
-public class ReportManager implements Manager{
+public class ReportManager extends Manager<Bill> {
     ReportRepository repository = new ReportRepository();
     @Override
     public void run() {
@@ -76,6 +76,7 @@ public class ReportManager implements Manager{
 
         }while (isExit);
     }
+
     private void costStatisticByDate(boolean billType){
         System.out.print(FontColor.info("Nhập ngày(yyyy-MM-dd): "));
         String inputDate = Console.sc.nextLine();

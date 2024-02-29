@@ -21,10 +21,11 @@ public class EmployeeRepository extends Repository<Employee,String>{
         try{
             conn = MysqlConnect.open();
             Field[]fields = Employee.class.getDeclaredFields();
-            String sql = "SELECT * FROM employee WHERE Emp_id LIKE '%'?'%'OR Emp_Name LIKE '%'?'%'";
+            String sql = "SELECT * FROM employees WHERE Emp_id LIKE ? OR Emp_Name LIKE ?";
+//            System.out.println(sql);
             pst =conn.prepareStatement(sql);
-            pst.setObject(1,key);
-            pst.setObject(2,key);
+            pst.setObject(1,"%"+key+"%");
+            pst.setObject(2,"%"+key+"%");
             rs = pst.executeQuery();
             while (rs.next()){
                 result.add(setField(Employee.class,rs,fields)) ;
