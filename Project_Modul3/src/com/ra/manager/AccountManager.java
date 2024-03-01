@@ -29,6 +29,7 @@ public class AccountManager extends Manager<Account> {
                 int select = Integer.parseInt(Console.sc.nextLine());
                 switch (select){
                     case 1:
+                        currentPage=1;
                         showAllAccount();
                         break;
                     case 2:

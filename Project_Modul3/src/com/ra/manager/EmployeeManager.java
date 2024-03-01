@@ -30,6 +30,7 @@ public class EmployeeManager extends Manager<Employee> {
                 int select = Integer.parseInt(Console.sc.nextLine());
                 switch (select){
                     case 1:
+                        currentPage = 1;
                         showAllEmployee();
                         break;
                     case 2:
@@ -84,7 +85,7 @@ public class EmployeeManager extends Manager<Employee> {
         String phone = Console.sc.nextLine();
         System.out.print(FontColor.info("Nhập địa chỉ: "));
         String address = Console.sc.nextLine();
-        System.out.print(FontColor.info("Nhập trạng thái: "));
+        System.out.println(FontColor.info("Nhập trạng thái: "));
         int empStatus = setEmpStatus();
         Employee newEmp = new Employee(empId,empName,birthOfDate,email,phone,address,empStatus);
         employeeService.add(newEmp);

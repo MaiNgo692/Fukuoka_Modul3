@@ -196,7 +196,7 @@ public class ProductManager extends Manager<Product> {
 
     }
     private void updateProductStatus(){
-        System.out.print(FontColor.info("Nhập mã sản phẩm cần cập nhật update status: "));
+        System.out.print(FontColor.info("Nhập mã sản phẩm cần cập nhật trạng thái: "));
         String productId = Console.sc.nextLine();
         Product updateProduct = productService.findId(productId);
         if(updateProduct!=null){

@@ -1,11 +1,13 @@
 package com.ra.manager;
 
+import com.ra.entity.Account;
 import com.ra.entity.Bill;
 import com.ra.entity.BillDetail;
 import com.ra.entity.Product;
 import com.ra.model.BillType;
 import com.ra.model.ConstStatus;
 import com.ra.model.PermissionType;
+import com.ra.repository.impl.AccountRepository;
 import com.ra.service.IProductService;
 import com.ra.service.impl.BillDetailServiceImpl;
 import com.ra.service.impl.BillServiceImpl;
@@ -25,6 +27,7 @@ public class BillManager extends Manager<Bill> {
     AccountManager accountManager =new AccountManager();
     BillDetailServiceImpl billDetailService = new BillDetailServiceImpl();
     IProductService<Product> productRepository = new ProductServiceImpl();
+    AccountRepository accountRepository = new AccountRepository();
     @Override
     public void run() {
         boolean isExit= true;
@@ -177,8 +180,18 @@ public class BillManager extends Manager<Bill> {
         bill.setBillType(billType);
         bill.setEmpIdCreated(Storage.current_user.getEmpId());
         bill.setCreated(new Date());
-        System.out.println("Nhập mã user duyệt: ");
-        String empAuth= accountManager.inputEmpId();
+        boolean isExit = true;
+        String empAuth;
+        do{
+            System.out.println("Nhập mã user duyệt: ");
+            empAuth= accountManager.inputEmpId();
+            Account  account = accountRepository.findByEmpId(empAuth);
+            if(account.isPermission()!=PermissionType.ADMIN){
+                System.out.println(FontColor.warning("Nhân viên không có quyền duyệt!"));
+            }else {
+                isExit =false;
+            }
+        }while (isExit);
         bill.setEmpIdAuth(empAuth);
         bill.setBillStatus((int) ConstStatus.BillStt.CREATE);
         return bill;
@@ -244,8 +257,9 @@ public class BillManager extends Manager<Bill> {
         do{
             System.out.println("Hãy chọn trường muốn edit:");
             System.out.println("1. Người duyệt");
-            System.out.println("2. Chi tiết phiếu");
-            System.out.println("3. Thoát");
+            System.out.println("2. Trạng thái");
+            System.out.println("3. Chi tiết phiếu");
+            System.out.println("4. Thoát");
             System.out.print(FontColor.info("Nhập lựa chọn:"));
             try{
                 select = Integer.parseInt(Console.sc.nextLine());
@@ -256,6 +270,24 @@ public class BillManager extends Manager<Bill> {
                         bill.setEmpIdAuth(empAuth);
                         break;
                     case 2:
+                        boolean isExit1 =true;
+                        int select1;
+                        do{
+                            System.out.println("Hãy chọn trạng thái:");
+                            System.out.println("1. Tạo");
+                            System.out.println("2. Hủy");
+                            System.out.print(FontColor.info("Nhập lựa chọn:"));
+                            select1 = Integer.parseInt(Console.sc.nextLine());
+                            if(select1!=1 && select1!=2){
+                                System.out.println(FontColor.warning("Hãy nhập 1 hoặc 2!"));
+                            }
+                            else {
+                                bill.setBillStatus((int) (select1==1?ConstStatus.BillStt.CREATE:ConstStatus.BillStt.CANCEL));
+                                isExit1 = false;
+                            }
+                        }while (isExit1);
+                        break;
+                    case 3:
                         List<BillDetail> billDetails = billDetailService.findByBillId(bill.getBillId());
                         if(billDetails!=null){
                             printBillDetailTitle();
@@ -266,11 +298,11 @@ public class BillManager extends Manager<Bill> {
                             System.out.println(FontColor.warning("Không tìm thấy billdetail!"));
                         }
                         break;
-                    case 3:
+                    case 4:
                         isExit = false;
                         break;
                     default:
-                        System.out.println(FontColor.warning("Hãy nhập từ 1 đến 3!"));
+                        System.out.println(FontColor.warning("Hãy nhập từ 1 đến 4!"));
                         break;
                 }
             }catch (NumberFormatException ex){
@@ -349,6 +381,7 @@ public class BillManager extends Manager<Bill> {
                 });
             }
             approveBill.setBillStatus((int) ConstStatus.BillStt.APPROVE);
+            approveBill.setAuthDate(new Date());
             billService.edit(approveBill);
         }else {
             System.out.println(FontColor.warning("Không tìm thấy Bill"));
