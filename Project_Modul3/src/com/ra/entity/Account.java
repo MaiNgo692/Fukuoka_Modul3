@@ -3,7 +3,7 @@ package com.ra.entity;
 import com.ra.util.*;
 
 @Table(name = "accounts")
-public class Account implements Entity {
+public class Account {
     @Id
     @Increment
     @Column(name = "Acc_Id")
@@ -83,8 +83,9 @@ public class Account implements Entity {
         this.accStatus = accStatus;
     }
     public void displayData(){
+        String strPass = this.password.replaceAll("(?s).", "*");
         System.out.printf("|%s|%s|%s|%s|%s|%s|\n", FontColor.centerString(12, String.valueOf(this.accId)), FontColor.centerString(30,this.userName),
-                FontColor.centerString(30,this.password),FontColor.centerString(20,this.permission?"User":"Admin") ,FontColor.centerString(20,this.empId),
+                FontColor.centerString(30,strPass),FontColor.centerString(20,this.permission?"User":"Admin") ,FontColor.centerString(20,this.empId),
                 FontColor.centerString(17,this.accStatus?"Active":"Block"));
     }
 }

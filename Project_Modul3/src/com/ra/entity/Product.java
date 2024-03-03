@@ -5,6 +5,7 @@ import com.ra.util.FontColor;
 import com.ra.util.Id;
 import com.ra.util.Table;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Table(name = "products")
@@ -93,8 +94,9 @@ public class Product {
         this.productStatus = productStatus;
     }
     public void displayData(){
+        SimpleDateFormat dmyFormat = new SimpleDateFormat("yyyy-MM-dd");
         System.out.printf("|%s|%s|%s|%s|%s|%s|%s|\n", FontColor.centerString(12,this.productId), FontColor.centerString(30,this.productName),
-                FontColor.centerString(30,this.manufacturer),FontColor.centerString(30, String.valueOf(this.created)) ,FontColor.centerString(10, String.valueOf(this.batch)),
+                FontColor.centerString(30,this.manufacturer),FontColor.centerString(30, dmyFormat.format(this.created)) ,FontColor.centerString(10, String.valueOf(this.batch)),
                 FontColor.centerString(10, String.valueOf(this.quantity)),FontColor.centerString(17,this.productStatus?"Hoạt động":"Không hoạt động"));
     }
 }

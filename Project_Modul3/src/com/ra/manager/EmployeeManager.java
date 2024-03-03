@@ -30,7 +30,6 @@ public class EmployeeManager extends Manager<Employee> {
                 int select = Integer.parseInt(Console.sc.nextLine());
                 switch (select){
                     case 1:
-                        currentPage = 1;
                         showAllEmployee();
                         break;
                     case 2:
@@ -60,6 +59,7 @@ public class EmployeeManager extends Manager<Employee> {
     }
 
     private void showAllEmployee(){
+        currentPage = 1;
         System.out.println("Danh sách sản phẩm:");
         List<Employee> employeeList = employeeService.findAll();
         showPageCurrent(employeeList);
@@ -91,7 +91,78 @@ public class EmployeeManager extends Manager<Employee> {
         employeeService.add(newEmp);
     }
     private void editEmployee(){
-//
+        IAccountService<Account> accountService = new AccountServiceImpl();
+        System.out.print(FontColor.info("Nhập mã nhân viên cần update:"));
+        String empId = Console.sc.nextLine();
+        Employee updateEmp = employeeService.findId(empId);
+        if(updateEmp!= null){
+            boolean isExit = true;
+            do{
+                System.out.println("Nhập trường muốn cập nhật:");
+                System.out.println("1. Tên nhân viên");
+                System.out.println("2. Ngày sinh");
+                System.out.println("3. Email");
+                System.out.println("4. Số điện thoại");
+                System.out.println("5. Địa chỉ");
+                System.out.println("6. Trạng thái");
+                System.out.println("7. Thoát");
+                System.out.print(FontColor.info("Nhập lựa chọn: "));
+                int select;
+                try{
+                    select = Integer.parseInt(Console.sc.nextLine());
+                    switch (select){
+                        case 1:
+                            System.out.println("Tên cũ: "+ updateEmp.getEmpName());
+                            System.out.print(FontColor.info("Nhập Tên mới: "));
+                            String empName = Console.sc.nextLine();
+                            updateEmp.setEmpName(empName);
+                            break;
+                        case 2:
+                            System.out.println("Ngày sinh cũ: "+ updateEmp.getBirthOfDate());
+                            updateEmp.setBirthOfDate(setBirthOfDate());
+                            break;
+                        case 3:
+                            System.out.println("Email cũ: " + updateEmp.getEmail());
+                            System.out.print(FontColor.info("Nhập email mới: "));
+                            String email = Console.sc.nextLine();
+                            updateEmp.setEmail(email);
+                            break;
+                        case 4:
+                            System.out.println("Sô điện thoại cũ: " + updateEmp.getPhone());
+                            System.out.print(FontColor.info("Nhập Số điện thoại mới: "));
+                            String phone = Console.sc.nextLine();
+                            updateEmp.setPhone(phone);
+                            break;
+                        case 5:
+                            System.out.println("Địa chỉ cũ: " + updateEmp.getAddress());
+                            System.out.print(FontColor.info("Nhập địa chỉ mới: "));
+                            String address = Console.sc.nextLine();
+                            updateEmp.setAddress(address);
+                            break;
+                        case 6:
+                            System.out.println("Trạng thái cũ: " + (updateEmp.getEmpStatus() == 0 ?"Hoạt động":updateEmp.getEmpStatus() ==1?"Nghỉ chế độ":"Nghỉ việc"));
+                            updateEmp.setEmpStatus(setEmpStatus());
+                            break;
+                        case 7:
+                            employeeService.edit(updateEmp);
+                            isExit=false;
+                            break;
+                        default:
+                            System.out.println(FontColor.warning("Hãy nhập từ 1 đến 7!"));
+                            break;
+                    }
+                }catch (NumberFormatException ex){
+                    System.out.println(FontColor.err(ex.getMessage()));
+                }
+            }while (isExit);
+                Account account = accountService.findByEmpId(updateEmp.getEmpId());
+                if(account!=null){
+                    account.setAccStatus(updateEmp.getEmpStatus() != 1 && updateEmp.getEmpStatus() != 2);
+                    accountService.edit(account);
+                }
+        }else {
+            System.out.println(FontColor.warning("Không tìm thấy mã nhân viên " + empId));
+        }
     }
     private void updateEmployeeStatus(){
         IAccountService<Account> accountService = new AccountServiceImpl();
@@ -142,6 +213,7 @@ public class EmployeeManager extends Manager<Employee> {
         System.out.println("0. Hoạt động");
         System.out.println("1. Nghỉ chế độ");
         System.out.println("2. Nghỉ việc");
+        System.out.print(FontColor.info("Nhập lựa chọn:"));
         do{
             try {
                 select = Integer.parseInt(Console.sc.nextLine());

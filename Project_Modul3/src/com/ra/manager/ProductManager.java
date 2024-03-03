@@ -1,6 +1,5 @@
 package com.ra.manager;
 
-import com.ra.entity.Account;
 import com.ra.entity.Product;
 import com.ra.model.ConstStatus;
 import com.ra.service.impl.ProductServiceImpl;
@@ -55,35 +54,8 @@ public class ProductManager extends Manager<Product> {
         }while (isExit);
     }
 
-//    @Override
-//    public void showPage() {
-//        List<Product> productList = productService.findAll();
-//        if(productList.size()>10){
-//            int pages = productList.size()/10;
-//            System.out.print("<");
-//            for(int i = 1; i<= pages;i++){
-//                System.out.print(" "+ i  +" ");
-//            }
-//            System.out.print(">\n");
-//            selectPage(productList,pages);
-//        }
-//    }
-//    void selectPage(List<Product> products,int pages){
-//        System.out.println("Nhập trang muốn hiển thị: ");
-//        int selectPage = Integer.parseInt(Console.sc.nextLine());
-//        if(selectPage<= 0 ||selectPage > pages){
-//            System.out.println(FontColor.warning("Hãy nhập từ 1 đến "+pages));
-//        }else {
-//            showPageCurrent(products,selectPage);
-//        }
-//    }
-//    void showPageCurrent(List<Product> products, int currentPage){
-//        printTitle();
-//        List<Product> currentPageProduct = products.subList((currentPage-1)*10,(currentPage-1)*10+10);
-//        currentPageProduct.forEach(Product::displayData);
-//        showPage();
-//    }
     private void showAllProduct(){
+        currentPage = 1;
         System.out.println("Danh sách sản phẩm:");
         List<Product> productList = productService.findAll();
         showPageCurrent(productList);
@@ -122,15 +94,16 @@ public class ProductManager extends Manager<Product> {
         }
     }
     private Product editFieldProduct(Product product){
-        System.out.println("Chọn trường muốn cập nhật:");
-        System.out.println("1. Tên sản phẩm");
-        System.out.println("2. Nhà sản suất");
-        System.out.println("3. Số lô");
-        System.out.println("4. Trạng thái");
-        System.out.println("5. Thoát");
         int select;
         boolean isExit=true;
         do {
+            System.out.println("Chọn trường muốn cập nhật:");
+            System.out.println("1. Tên sản phẩm");
+            System.out.println("2. Nhà sản suất");
+            System.out.println("3. Số lô");
+            System.out.println("4. Trạng thái");
+            System.out.println("5. Thoát");
+            System.out.print(FontColor.info("Nhập lựa chọn:"));
             try {
                 select = Integer.parseInt(Console.sc.nextLine());
                 switch (select){
@@ -157,18 +130,8 @@ public class ProductManager extends Manager<Product> {
                         System.out.println("1. Hoạt động");
                         System.out.println("2. Không hoạt động");
                         System.out.print(FontColor.info("Nhập lựa chọn:"));
-                        int select1 ;
-                        boolean isExit1 = true;
-                        do {
-                            select1 = Integer.parseInt(Console.sc.nextLine());
-                            if (select1 == 1) {
-                                product.setProductStatus(ConstStatus.ProductStt.ACTIVE);
-                                isExit1 = false;
-                            } else if (select1 == 2) {
-                                product.setProductStatus(ConstStatus.ProductStt.INACTION);
-                                isExit1 = false;
-                            } else System.out.println(FontColor.warning("Hãy nhập 1 hoặc 2!"));
-                        }while (isExit1);
+                        int select1= inputProductStatus() ;
+                        product.setProductStatus(select1 == 1);
                         break;
                     case 5:
                         isExit=false;
@@ -183,6 +146,19 @@ public class ProductManager extends Manager<Product> {
 
         }while (isExit);
         return product;
+    }
+    private int inputProductStatus(){
+        int select1 ;
+        do {
+            try{
+                select1 = Integer.parseInt(Console.sc.nextLine());
+                if (select1 == 1 || select1 == 2) {
+                    return select1;
+                } else System.out.println(FontColor.warning("Hãy nhập 1 hoặc 2!"));
+            }catch (NumberFormatException ex){
+                System.out.println(FontColor.warning("Hãy nhập 1 số!"));
+            }
+        }while (true);
     }
     private void findByName(){
         System.out.print(FontColor.info("Nhập tên sản phẩm:"));
@@ -204,23 +180,8 @@ public class ProductManager extends Manager<Product> {
             System.out.println("1. Hoạt động");
             System.out.println("2. Không hoạt động");
             System.out.print(FontColor.info("Nhập lựa chọn:"));
-            int select ;
-            boolean isExit = true;
-            do{
-                try {
-                    select = Integer.parseInt(Console.sc.nextLine());
-                    if(select ==1){
-                        updateProduct.setProductStatus(ConstStatus.ProductStt.ACTIVE);
-                        isExit= false;
-                    }else if(select==2){
-                        updateProduct.setProductStatus(ConstStatus.ProductStt.INACTION);
-                        isExit=false;
-                    }else System.out.println(FontColor.warning("Hãy nhập 1 hoặc 2!"));
-                }catch (NumberFormatException ex){
-                    System.out.println(FontColor.err(ex.getMessage()));
-                }
-
-            }while (isExit);
+            int select = inputProductStatus();
+            updateProduct.setProductStatus(select==1);
             productService.edit(updateProduct);
         }else {
             System.out.println(FontColor.warning("Không tìm thấy mã sản phẩm: "+productId));

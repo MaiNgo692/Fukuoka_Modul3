@@ -10,6 +10,7 @@ import com.ra.util.FontColor;
 import java.sql.Date;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
 import java.util.Map;
 
@@ -79,36 +80,33 @@ public class ReportManager extends Manager<Bill> {
 
     private void costStatisticByDate(boolean billType){
         System.out.print(FontColor.info("Nhập ngày(yyyy-MM-dd): "));
+        LocalDate date = inputDate();
+        System.out.printf("|%s|%s|\n",FontColor.centerString(30,"Ngày"),FontColor.centerString(30,billType== BillType.EXPORT?"Tổng doanh thu":"Tổng chi phí"));
+        System.out.printf("|%s|%s|\n",FontColor.centerString(30, String.valueOf(date)),
+                                      FontColor.centerString(30,formatVn().format(repository.costStatisticByDate(Date.valueOf(date),billType))+"đ"));
+
+    }
+    private LocalDate inputDate(){
+        LocalDate date;
         String inputDate = Console.sc.nextLine();
-        LocalDate date = LocalDate.parse(inputDate);
-        if(billType== BillType.EXPORT){
-            System.out.printf("|%s|%s|\n",FontColor.centerString(30,"Ngày"),FontColor.centerString(30,"Tổng doanh thu"));
-            System.out.printf("|%s|%s|\n",FontColor.centerString(30, String.valueOf(date)),
-                    FontColor.centerString(30,formatVn().format(repository.costStatisticByDate(Date.valueOf(date),BillType.EXPORT))));
-        }
-        else {
-            System.out.printf("|%s|%s|\n",FontColor.centerString(30,"Ngày"),FontColor.centerString(30,"Tổng chi phí"));
-            System.out.printf("|%s|%s|\n",FontColor.centerString(30, String.valueOf(date)),
-                    FontColor.centerString(30,formatVn().format(repository.costStatisticByDate(Date.valueOf(date), BillType.IMPORT))));
-        }
+        do{
+            try {
+                date = LocalDate.parse(inputDate);
+                return date;
+            }catch (DateTimeParseException ex){
+                System.out.println(FontColor.warning("Hãy nhập đúng định dạng (yyyy-MM-dd)!"));
+            }
+        }while (true);
     }
     private void costStatisticOverPeriod(boolean billType){
         System.out.print(FontColor.info("Nhập ngày bắt đầu(yyyy-MM-dd): "));
-        String inputFromDate = Console.sc.nextLine();
-        LocalDate fromDate = LocalDate.parse(inputFromDate);
+        LocalDate fromDate =inputDate();
         System.out.print(FontColor.info("Nhập ngày kết thúc(yyyy-MM-dd): "));
-        String inputToDate = Console.sc.nextLine();
-        LocalDate toDate = LocalDate.parse(inputToDate);
-        if(billType== BillType.EXPORT){
-            System.out.printf("|%s|%s|%s|\n",FontColor.centerString(30,"From Date"),FontColor.centerString(30,"End Date"),FontColor.centerString(30,"Tổng doanh thu"));
-            System.out.printf("|%s|%s|%s|\n",FontColor.centerString(30, String.valueOf(fromDate)),FontColor.centerString(30, String.valueOf(toDate)),
-                    FontColor.centerString(30,formatVn().format(repository.costStatisticOverPeriod(Date.valueOf(fromDate),Date.valueOf(toDate),BillType.EXPORT))));
-        }
-        else {
-            System.out.printf("|%s|%s|%s|\n",FontColor.centerString(30,"From Date"),FontColor.centerString(30,"End Date"),FontColor.centerString(30,"Tổng chi phí"));
-            System.out.printf("|%s|%s|%s|\n",FontColor.centerString(30, String.valueOf(fromDate)),FontColor.centerString(30, String.valueOf(toDate)),
-                    FontColor.centerString(30,formatVn().format(repository.costStatisticOverPeriod(Date.valueOf(fromDate),Date.valueOf(toDate),BillType.IMPORT))));
-        }
+        LocalDate toDate = inputDate();
+        System.out.printf("|%s|%s|%s|\n",FontColor.centerString(30,"From Date"),FontColor.centerString(30,"End Date"),FontColor.centerString(30,billType== BillType.EXPORT?"Tổng doanh thu":"Tổng chi phí"));
+        System.out.printf("|%s|%s|%s|\n",FontColor.centerString(30, String.valueOf(fromDate)),FontColor.centerString(30, String.valueOf(toDate)),
+                    FontColor.centerString(30,formatVn().format(repository.costStatisticOverPeriod(Date.valueOf(fromDate),Date.valueOf(toDate),BillType.EXPORT))+"đ"));
+
     }
     private void empStatisticByStatus(){
         System.out.println("Thống kê số nhân viên theo trạng thái:");
@@ -119,15 +117,13 @@ public class ReportManager extends Manager<Bill> {
     }
     private void mostProductQuantityOverPeriod(boolean billType){
         System.out.print(FontColor.info("Nhập ngày bắt đầu(yyyy-MM-dd): "));
-        String inputFromDate = Console.sc.nextLine();
-        LocalDate fromDate = LocalDate.parse(inputFromDate);
+        LocalDate fromDate = inputDate();
         System.out.print(FontColor.info("Nhập ngày kết thúc(yyyy-MM-dd): "));
-        String inputToDate = Console.sc.nextLine();
-        LocalDate toDate = LocalDate.parse(inputToDate);
-            System.out.println("Thống kê sản phẩm nhập nhiều nhất");
-            System.out.printf("|%s|%s|%s|%s|\n",FontColor.centerString(30,"From Date"),FontColor.centerString(30,"To Date"),
+        LocalDate toDate = inputDate();
+        System.out.println("Thống kê sản phẩm nhập nhiều nhất");
+        System.out.printf("|%s|%s|%s|%s|\n",FontColor.centerString(30,"From Date"),FontColor.centerString(30,"To Date"),
                     FontColor.centerString(30,"Sản phẩm"),FontColor.centerString(30,"Số lượng"));
-            Map<String, Integer> map = repository.mostProductQuantityOverPeriod(Date.valueOf(fromDate), Date.valueOf(toDate),billType);
+        Map<String, Integer> map = repository.mostProductQuantityOverPeriod(Date.valueOf(fromDate), Date.valueOf(toDate),billType);
             for (String i: map.keySet()){
                 System.out.printf("|%s|%s|%s|%s|\n",FontColor.centerString(30,fromDate.toString()),FontColor.centerString(30,toDate.toString()),
                         FontColor.centerString(30,i),FontColor.centerString(30, String.valueOf(map.get(i))));
@@ -135,11 +131,9 @@ public class ReportManager extends Manager<Bill> {
     }
     private void leastProductQuantityOverPeriod(boolean billType){
         System.out.print(FontColor.info("Nhập ngày bắt đầu(yyyy-MM-dd): "));
-        String inputFromDate = Console.sc.nextLine();
-        LocalDate fromDate = LocalDate.parse(inputFromDate);
+        LocalDate fromDate = inputDate();
         System.out.print(FontColor.info("Nhập ngày kết thúc(yyyy-MM-dd): "));
-        String inputToDate = Console.sc.nextLine();
-        LocalDate toDate = LocalDate.parse(inputToDate);
+        LocalDate toDate = inputDate();
         System.out.println("Thống kê sản phẩm nhập ít nhất");
         System.out.printf("|%s|%s|%s|%s|\n",FontColor.centerString(30,"From Date"),FontColor.centerString(30,"To Date"),
                 FontColor.centerString(30,"Sản phẩm"),FontColor.centerString(30,"Số lượng"));
@@ -151,8 +145,7 @@ public class ReportManager extends Manager<Bill> {
     }
     private NumberFormat formatVn(){
         Locale localeVN = new Locale("vi", "VN");
-        NumberFormat vn = NumberFormat.getInstance(localeVN);
-        return vn;
+        return NumberFormat.getInstance(localeVN);
     }
 
 }

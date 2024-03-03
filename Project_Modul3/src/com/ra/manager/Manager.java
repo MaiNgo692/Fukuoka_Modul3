@@ -1,6 +1,5 @@
 package com.ra.manager;
 
-import com.ra.entity.Account;
 import com.ra.util.Console;
 import com.ra.util.FontColor;
 
@@ -38,7 +37,7 @@ public class Manager<T> implements IManager<T>{
         System.out.println("Nhập trang muốn hiển thị: ");
         int selectPage = Integer.parseInt(Console.sc.nextLine());
         if(selectPage< 1 ||selectPage > pages){
-            System.out.println(FontColor.warning("Hãy nhập từ 1 đến "+pages));
+            System.out.println(FontColor.warning("Hãy nhập từ 1 đến "+pages+"!"));
         }else {
             currentPage = selectPage;
              showPageCurrent(listData);

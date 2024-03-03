@@ -1,8 +1,7 @@
 package com.ra.entity;
 
 import com.ra.util.*;
-
-import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Table(name = "bills")
@@ -76,6 +75,7 @@ public class Bill {
     }
 
     public void setCreated(Date created) {
+
         this.created = created;
     }
 
@@ -103,9 +103,10 @@ public class Bill {
         this.billStatus = billStatus;
     }
     public void displayData(){
+        SimpleDateFormat dmyFormat = new SimpleDateFormat("yyyy-MM-dd");
         System.out.printf("|%s|%s|%s|%s|%s|%s|%s|%s|\n", FontColor.centerString(15, String.valueOf(this.billId)), FontColor.centerString(15,this.billCode),
-                FontColor.centerString(20,this.billType?"Phiếu nhập":"Phiếu xuất"),FontColor.centerString(20,this.empIdCreated) ,FontColor.centerString(20, String.valueOf(this.created)),
-                FontColor.centerString(20,this.empIdAuth),FontColor.centerString(20, String.valueOf(this.authDate)),
+                FontColor.centerString(20,this.billType?"Phiếu nhập":"Phiếu xuất"),FontColor.centerString(20,this.empIdCreated) ,FontColor.centerString(20, dmyFormat.format(this.created)),
+                FontColor.centerString(20,this.empIdAuth),FontColor.centerString(20, dmyFormat.format(this.authDate)),
                 FontColor.centerString(17,this.billStatus == 0 ?"Tạo":this.billStatus == 1?"Hủy":"Duyệt"));
     }
 

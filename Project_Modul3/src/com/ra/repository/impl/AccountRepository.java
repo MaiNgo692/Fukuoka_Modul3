@@ -19,10 +19,10 @@ public class AccountRepository extends Repository<Account,Integer> {
             ResultSet rs;
             try{
                 conn = MysqlConnect.open();
-                String sql = "SELECT c.* FROM accounts c INNER JOIN employees e ON c.Emp_id = e.Emp_Id WHERE c.User_Name = ? OR e.Emp_Name = ?";
+                String sql = "SELECT c.* FROM accounts c INNER JOIN employees e ON c.Emp_id = e.Emp_Id WHERE c.User_Name like ? OR e.Emp_Name like ?";
                 pst = conn.prepareStatement(sql);
-                pst.setObject(1,key);
-                pst.setObject(2,key);
+                pst.setObject(1,"%"+key+"%");
+                pst.setObject(2,"%"+key+"%");
                 rs = pst.executeQuery();
                 Field[] fields = Account.class.getDeclaredFields();
 //            Arrays.stream(fields).filter(f -> f.getAnnotation(Increment.class)==null);

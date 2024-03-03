@@ -4,11 +4,10 @@ import com.ra.util.Column;
 import com.ra.util.FontColor;
 import com.ra.util.Id;
 import com.ra.util.Table;
-
 import java.util.Date;
 
 @Table(name = "employees")
-public class Employee implements Entity{
+public class Employee {
     @Id
     @Column(name = "Emp_Id")
     String empId;

@@ -49,6 +49,8 @@ public class Application {
             loginAccount = accountService.login(userName,password);
             if(loginAccount!=null){
                 isExit=false;
+            }else {
+                System.out.println(FontColor.warning("Mật khẩu hoặc password không đúng!"));
             }
         }while (isExit);
         Storage.current_user = loginAccount;

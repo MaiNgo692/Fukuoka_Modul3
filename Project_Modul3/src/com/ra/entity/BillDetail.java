@@ -73,6 +73,6 @@ public class BillDetail {
         Locale localeVN = new Locale("vi", "VN");
         NumberFormat vn = NumberFormat.getInstance(localeVN);
         System.out.printf("|%s|%s|%s|%s|%s|\n", FontColor.centerString(15, String.valueOf(this.billDetailId)), FontColor.centerString(15, String.valueOf(this.billId)),
-                FontColor.centerString(20,this.productId),FontColor.centerString(20, String.valueOf(this.quantity)) ,FontColor.centerString(20,vn.format(this.price)));
+                FontColor.centerString(20,this.productId),FontColor.centerString(20, String.valueOf(this.quantity)) ,FontColor.centerString(20,vn.format(this.price)+"đ"));
     }
 }

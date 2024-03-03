@@ -2,7 +2,6 @@ package com.ra.manager;
 
 import com.ra.entity.Account;
 import com.ra.entity.Employee;
-import com.ra.entity.Product;
 import com.ra.model.ConstStatus;
 import com.ra.repository.IRepository;
 import com.ra.repository.impl.Repository;
@@ -10,7 +9,6 @@ import com.ra.service.impl.AccountServiceImpl;
 import com.ra.util.Console;
 import com.ra.util.FontColor;
 
-import java.util.ArrayList;
 import java.util.List;
 public class AccountManager extends Manager<Account> {
     AccountServiceImpl accountService = new AccountServiceImpl();
@@ -29,7 +27,6 @@ public class AccountManager extends Manager<Account> {
                 int select = Integer.parseInt(Console.sc.nextLine());
                 switch (select){
                     case 1:
-                        currentPage=1;
                         showAllAccount();
                         break;
                     case 2:
@@ -55,6 +52,7 @@ public class AccountManager extends Manager<Account> {
         }while (isExit);
     }
     private void showAllAccount(){
+        currentPage=1;
         System.out.println("Danh sách tài khoản:");
         List<Account> accounts = accountService.findAll();
         showPageCurrent(accounts);
@@ -80,12 +78,13 @@ public class AccountManager extends Manager<Account> {
         accountService.add(newAccount);
     }
     private void updateAccountStatus(){
-
         System.out.print(FontColor.info("Nhập mã tài khoản cần cập nhật: "));
         int  accId = Integer.parseInt(Console.sc.nextLine());
         Account updateAccount = accountService.findId(accId) ;
         if(updateAccount != null){
+            printTitle();
             updateAccount.displayData();
+            printFooter();
             System.out.println("Chọn trạng thái cần update:");
             System.out.println("1. Hoạt động");
             System.out.println("2. Không hoạt động");
@@ -106,13 +105,18 @@ public class AccountManager extends Manager<Account> {
                     System.out.println(FontColor.err(ex.getMessage()));
                 }
             }while (isExit);
-            accountService.edit(updateAccount);
+            Account accountEdited= accountService.edit(updateAccount);
+            if(accountEdited!=null){
+                printTitle();
+                accountEdited.displayData();
+                printFooter();
+            }
         }else {
             System.out.println(FontColor.warning("Không tìm thấy mã tài khoản " + accId));
         }
     }
     private void findByUserNameOrName(){
-        System.out.print(FontColor.info("Nhập thông tin cần tìm:"));
+        System.out.print(FontColor.info("Nhập username hoặc tên nhân viên cần tìm:"));
         String key = Console.sc.nextLine();
         List<Account> result = accountService.findByUserNameOrName(key);
         if(!result.isEmpty()){
@@ -168,6 +172,6 @@ public class AccountManager extends Manager<Account> {
                 FontColor.centerString(17,"Trạng thái"));
     }
     private void printFooter(){
-        System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------------------------------------------------------------");
     }
 }

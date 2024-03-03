@@ -171,7 +171,6 @@ public class BillManager extends Manager<Bill> {
                     System.out.println(FontColor.warning("Hãy nhập số lượng nhỏ hơn " +product.getQuantity()));
                 }
             }
-
         }while (true);
     }
     public Bill inputBill(boolean billType){
@@ -213,9 +212,12 @@ public class BillManager extends Manager<Bill> {
             if(editBill!=null && isExistBill){
                 if(editBill.getBillStatus()!=ConstStatus.BillStt.APPROVE){
                     Bill editedBill=billService.edit(selectEditBillField(editBill,billType));
-                    printTitle();
-                    editedBill.displayData();
-                    printFooter();
+                    if(editedBill!=null){
+                        System.out.println(FontColor.success("Cập nhật thành công!"));
+                        printTitle();
+                        editedBill.displayData();
+                        printFooter();
+                    }
                 }else {
                     System.out.println(FontColor.warning("Không thể cập nhật bill đã duyệt!"));
                 }
@@ -344,12 +346,15 @@ public class BillManager extends Manager<Bill> {
                     float price = Float.parseFloat(Console.sc.nextLine());
                     billDetail.setPrice(price);
                     BillDetail editedBilDetail = billDetailService.edit(billDetail);
-                    printBillDetailTitle();
-                    editedBilDetail.displayData();
-                    printBillDetailFooter();
+                    if(editedBilDetail!=null){
+                        System.out.println(FontColor.success("Cập nhật thành công billDetail!"));
+                        printBillDetailTitle();
+                        editedBilDetail.displayData();
+                        printBillDetailFooter();
+                    }
                     return;
                 }else {
-                    System.out.println(FontColor.warning("Không tìm thấy billdetail mã "+billDetailId));
+                    System.out.println(FontColor.warning("Không tìm thấy billDetail mã "+billDetailId));
                 }
             }catch (NumberFormatException ex){
                 System.out.println(FontColor.warning(ex.getMessage()));
@@ -365,13 +370,19 @@ public class BillManager extends Manager<Bill> {
         billCreatedList.forEach(Bill::displayData);
         printFooter();
         Bill approveBill = findByIdOrBillCode(billType);
-        if(approveBill!=null){
+        if(approveBill!=null&& Objects.equals(Storage.current_user.getEmpId(), approveBill.getEmpIdAuth())){
             List<BillDetail> billDetails = billDetailService.findByBillId(approveBill.getBillId());
             if(billType==BillType.EXPORT){
                 billDetails.forEach(bd->{
                     Product product = productRepository.findId(bd.getProductId());
-                    product.setQuantity(product.getQuantity()-bd.getQuantity());
-                    productRepository.edit(product);
+                    if(product.getQuantity()>bd.getQuantity()){
+                        product.setQuantity(product.getQuantity()-bd.getQuantity());
+                        productRepository.edit(product);
+                    }else {
+                        System.out.println(FontColor.warning("Không đủ số lượng trong kho!"));
+                        System.out.println(FontColor.warning("Vui lòng kiểm tra lại!"));
+                    }
+
                 });
             }else {
                 billDetails.forEach(bd->{
@@ -382,11 +393,16 @@ public class BillManager extends Manager<Bill> {
             }
             approveBill.setBillStatus((int) ConstStatus.BillStt.APPROVE);
             approveBill.setAuthDate(new Date());
-            billService.edit(approveBill);
+            Bill billApproved = billService.edit(approveBill);
+            if(billApproved!= null){
+                System.out.println(FontColor.success("Phiếu đã được duyệt!"));
+                printTitle();
+                billApproved.displayData();
+                printFooter();
+            }
         }else {
-            System.out.println(FontColor.warning("Không tìm thấy Bill"));
+            System.out.println(FontColor.warning("Bạn không có quyền duyệt bill này!"));
         }
-
     }
     public Bill findByIdOrBillCode(boolean billType){
         System.out.print(FontColor.info("Nhập mã bill hoặc bill code:"));

@@ -20,7 +20,7 @@ public class AccountServiceImpl implements IAccountService<Account> {
 
     @Override
     public Account findId(Integer id) {
-        return null;
+        return accountRepository.findId(id,Account.class);
     }
 
     @Override
