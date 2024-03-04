@@ -115,6 +115,7 @@ public class BillManager extends Manager<Bill> {
                         boolean isExistBillDetail = false;
                         for(BillDetail bd:billDetails){
                             if(bd.getProductId().equals(billDetail.getProductId())&& Objects.equals(bd.getPrice(), billDetail.getPrice())){
+                                bd.setQuantity(bd.getQuantity()+billDetail.getQuantity());
                                 isExistBillDetail = true;
                                 break;
                             }

@@ -88,13 +88,14 @@ public class ReportManager extends Manager<Bill> {
     }
     private LocalDate inputDate(){
         LocalDate date;
-        String inputDate = Console.sc.nextLine();
         do{
             try {
+                String inputDate = Console.sc.nextLine();
                 date = LocalDate.parse(inputDate);
                 return date;
             }catch (DateTimeParseException ex){
                 System.out.println(FontColor.warning("Hãy nhập đúng định dạng (yyyy-MM-dd)!"));
+
             }
         }while (true);
     }

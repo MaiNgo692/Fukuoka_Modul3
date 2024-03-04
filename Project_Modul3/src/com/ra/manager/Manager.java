@@ -25,7 +25,11 @@ public class Manager<T> implements IManager<T>{
             }
             System.out.print("<");
             for(int i = 1; i<= pages;i++){
-                System.out.print(" "+ i  +" ");
+                if(i == currentPage){
+                    System.out.print(FontColor.err(" "+i+" "));
+                }else {
+                    System.out.print(" "+ i  +" ");
+                }
             }
             System.out.print(">\n");
             selectPage(listData,pages);
